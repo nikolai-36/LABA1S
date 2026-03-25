@@ -138,4 +138,5 @@ int main() {
 
 ```
 ## Результат выполнения программы:
-<img width="571" height="245" alt="image" src="https://github.com/nikolai-36/LABA1S/edit/main/READ.md" />
+<img width="512" height="204" alt="image" src="https://github.com/user-attachments/assets/c9cd3815-a2cf-4a41-a8ec-7fbbd1909883" />
+
