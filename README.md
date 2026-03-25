@@ -1,0 +1,141 @@
+# Лабораторная работа №1: Структура данных
+## Задание:
+<img width="1156" height="653" alt="image" src="https://github.com/user-attachments/assets/01714c6a-22bc-493c-a4bb-988d1281bbfe" />
+
+## Реализация:
+
+### Листинг программы:
+
+``` c++
+#include <iostream>
+#include <cmath>
+#include <windows.h>
+#include <psapi.h>
+#include <chrono>
+#pragma comment(lib, "psapi.lib")
+
+using namespace std;
+using namespace chrono;
+
+// Функция возвращает пиковое использование рабочего множества (в байтах)
+size_t getPeakRSS() {
+    PROCESS_MEMORY_COUNTERS info;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info)))
+        return info.PeakWorkingSetSize;
+    return 0;
+}
+
+int main() {
+    system("chcp 65001");
+    // Замер памяти до вычислений
+    size_t memBefore = getPeakRSS();
+
+    long long A, B;
+    cin >> A >> B;
+
+    // Замер времени начала (после ввода)
+    auto timeStart = steady_clock::now();
+
+    long long n = 1;
+    long long tempA = A;
+
+    // Обработка делителя 2
+    if (tempA % 2 == 0) {
+        int cntA = 0;
+        while (tempA % 2 == 0) {
+            cntA++;
+            tempA /= 2;
+        }
+
+        int cntB = 0;
+        long long tempB = B;
+        while (tempB % 2 == 0) {
+            cntB++;
+            tempB /= 2;
+        }
+
+        if (cntB == 0) {
+            cout << -1 << endl;
+            auto timeEnd = steady_clock::now();
+            auto elapsed_ms = duration_cast<milliseconds>(timeEnd - timeStart).count();
+            size_t memAfter = getPeakRSS();
+            cerr << "Peak memory usage: " << (memAfter - memBefore) / (1024.0 * 1024.0) << " MB" << endl;
+            cerr << "Execution time: " << elapsed_ms << " ms" << endl;
+            return 0;
+        }
+
+        long long need = (cntA + cntB - 1) / cntB; // ceil(cntA / cntB)
+        if (need > n) n = need;
+    }
+
+    // Перебор нечётных делителей до sqrt(tempA)
+    for (long long p = 3; p * p <= tempA; p += 2) {
+        if (tempA % p == 0) {
+            int cntA = 0;
+            while (tempA % p == 0) {
+                cntA++;
+                tempA /= p;
+            }
+
+            int cntB = 0;
+            long long tempB = B;
+            while (tempB % p == 0) {
+                cntB++;
+                tempB /= p;
+            }
+
+            if (cntB == 0) {
+                cout << -1 << endl;
+                auto timeEnd = steady_clock::now();
+                auto elapsed_ms = duration_cast<milliseconds>(timeEnd - timeStart).count();
+                size_t memAfter = getPeakRSS();
+                cerr << "Затрачено памяти: " << (memAfter - memBefore) / (1024.0 * 1024.0) << " MB" << endl;
+                cerr << "Время выполнения: " << elapsed_ms << " ms" << endl;
+                return 0;
+            }
+
+            long long need = (cntA + cntB - 1) / cntB;
+            if (need > n) n = need;
+        }
+    }
+
+    // Если остался простой множитель > 1
+    if (tempA > 1) {
+        long long p = tempA;
+
+        int cntB = 0;
+        long long tempB = B;
+        while (tempB % p == 0) {
+            cntB++;
+            tempB /= p;
+        }
+
+        if (cntB == 0) {
+            cout << -1 << endl;
+            auto timeEnd = steady_clock::now();
+            auto elapsed_ms = duration_cast<milliseconds>(timeEnd - timeStart).count();
+            size_t memAfter = getPeakRSS();
+            cerr << "Затрачено памяти: " << (memAfter - memBefore) / (1024.0 * 1024.0) << " MB" << endl;
+            cerr << "Время выполнения: " << elapsed_ms << " ms" << endl;
+            return 0;
+        }
+
+        long long need = (1 + cntB - 1) / cntB; // cntA = 1
+        if (need > n) n = need;
+    }
+
+    cout << n << endl;
+
+    // Финальный замер времени и памяти
+    auto timeEnd = steady_clock::now();
+    auto elapsed_ms = duration_cast<milliseconds>(timeEnd - timeStart).count();
+    size_t memAfter = getPeakRSS();
+    cerr << "Затрачено памяти: " << (memAfter - memBefore) / (1024.0 * 1024.0) << " MB" << endl;
+    cerr << "Время выполнения: " << elapsed_ms << " ms" << endl;
+    cout << "Автор: Мандрикин Николай Денисович, группа: 090301-ПОВа-о25" << endl;
+    return 0;
+}
+
+```
+## Результат выполнения программы:
+<img width="571" height="245" alt="image" src="https://github.com/user-attachments/assets/88be072a-3b5f-4463-8ccb-653c9bf53d2d" />
